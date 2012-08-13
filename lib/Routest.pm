@@ -7,6 +7,7 @@ sub startup {
 
   # Router
   my $r = $self->routes;
+  my $unbridged = $r->bridge('/')->to( cb => sub { 1 } );
   my $bridged = $r->bridge('/')->to( cb => sub { 1 } );
 
   $r->add_condition( has_param_one => sub { $_[1]->param('one') } );
@@ -14,7 +15,7 @@ sub startup {
   # This fails
   # Go to: /a
   # Go to: /a?one=1
-  $r->get('/a')->over('has_param_one')->to('one#hello');
+  $unbridged->get('/a')->over('has_param_one')->to('one#hello');
   $bridged->get('/a')->to('two#hello');
 
   # This works
